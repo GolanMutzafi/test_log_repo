@@ -19,10 +19,13 @@ pipeline{
                             returnStatus: true
                         )
                         if (result == 0){
-                            echo "Error found: '${params.ErrorString}' in file '${params.LogFilePath}'"
+                            error "Error found: '${params.ErrorString}' in file '${params.LogFilePath}'"
                         }else{
                             echo "no errors found with: '${params.ErrorString}' in file '${params.LogFilePath}'"
                         }
+                    }
+                    else{
+                        echo "there is sufficient storage space in the disk"
                     }
                 }
             }
