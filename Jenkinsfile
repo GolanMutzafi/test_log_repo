@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'RequiredFreeSpace', defaultValue: '10', description: 'The percentage of free space required')
-        string(name: 'LogFilePath', defaultValue: '/home/golan/Desktop/gptmission/log_test_repo/jenkinslog.txt', description: 'Log file path')
+        string(name: 'LogFilePath', defaultValue: '../jenkinslog.txt', description: 'Log file path')
         string(name: 'ErrorString', defaultValue: 'mvn', description: 'Error string for search')
     }
     stages {
