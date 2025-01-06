@@ -13,6 +13,11 @@ pipeline{
                         script: "df / | tail -1 | awk '{print \$4/\$2 * 100}'",
                         returnStdout: true
                     ).trim()
+                    def fileContent = readFile(${params.LogFilePath})
+
+                    if (fileContent.contains(${params.ErrorString})){
+                        echo "The text '${params.ErrorString}' was found in ${params.LogFilePath})"
+                    }
                     if (FREESPACE.toFloat() < RequiredFreeSpace.toFloat()){
                         def result = sh(
                             script: "grep -q '${params.ErrorString}' '${params.LogFilePath}'",
