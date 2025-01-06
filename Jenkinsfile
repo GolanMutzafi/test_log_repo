@@ -9,12 +9,11 @@ pipeline{
             stage("space_test"){
                 steps{
                     script{
+                        def fileContent = readFile(${params.LogFilePath})
                         def FREESPACE = sh(
                         script: "df / | tail -1 | awk '{print \$4/\$2 * 100}'",
                         returnStdout: true
                     ).trim()
-                    def fileContent = readFile(${params.LogFilePath})
-
                     if (fileContent.contains(${params.ErrorString})){
                         echo "The text '${params.ErrorString}' was found in ${params.LogFilePath})"
                     }
