@@ -18,7 +18,7 @@ pipeline{
                             script: "grep -q '${params.ErrorString}' '${params.LogFilePath}'",
                             returnStatus: true
                         )
-                        if (result == 0 && fileExists(${params.LogFilePath})){
+                        if (result == 0 && fileExists(' ${params.LogFilePath} ')){
                             error "Error found: '${params.ErrorString}' in file '${params.LogFilePath}'"
                         }else{
                             echo "no errors found with: '${params.ErrorString}' in file '${params.LogFilePath}'"
