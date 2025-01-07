@@ -2,39 +2,39 @@ pipeline {
     agent any
     parameters {
         string(name: 'RequiredFreeSpace', defaultValue: '10', description: 'The percentage of free space required')
-        string(name: 'LogFilePath', defaultValue: 'jenkinslog.txt', description: 'Relative path to the log file')
-        string(name: 'ErrorString', defaultValue: 'mvn', description: 'Error string to search for')
+        string(name: 'LogFilePath', defaultValue: '../jenkinslog.txt', description: 'Log file path relative to Jenkinsfile')
+        string(name: 'ErrorString', defaultValue: 'mvn', description: 'Error string for search')
     }
     stages {
         stage("space_test") {
             steps {
                 script {
-                    def filePath = "${params.LogFilePath}"
-                    if (!fileExists(filePath)) {
-                        error "Log file '${filePath}' not found in workspace."
+                    if (!fileExists(params.LogFilePath)) {
+                        error "Log file '${params.LogFilePath}' not found in workspace."
                     }
-                    def fileContent = readFile(filePath)
-                    def freeSpace = sh(
+                    
+                    def fileContent = readFile(params.LogFilePath)
+                    def FREESPACE = sh(
                         script: "df / | tail -1 | awk '{print \$4/\$2 * 100}'",
                         returnStdout: true
                     ).trim()
 
                     if (fileContent.contains(params.ErrorString)) {
-                        echo "The text '${params.ErrorString}' was found in '${filePath}'"
+                        echo "The text '${params.ErrorString}' was found in ${params.LogFilePath}"
                     }
-
-                    if (freeSpace.toFloat() < params.RequiredFreeSpace.toFloat()) {
+                    
+                    if (FREESPACE.toFloat() < params.RequiredFreeSpace.toFloat()) {
                         def result = sh(
-                            script: "grep -q '${params.ErrorString}' '${filePath}'",
+                            script: "grep -q '${params.ErrorString}' '${params.LogFilePath}'",
                             returnStatus: true
                         )
                         if (result == 0) {
-                            error "Error found: '${params.ErrorString}' in file '${filePath}'"
+                            error "Error found: '${params.ErrorString}' in file '${params.LogFilePath}'"
                         } else {
-                            echo "No errors found with '${params.ErrorString}' in file '${filePath}'"
+                            echo "No errors found with: '${params.ErrorString}' in file '${params.LogFilePath}'"
                         }
                     } else {
-                        echo "There is sufficient storage space on the disk."
+                        echo "There is sufficient storage space on the disk"
                     }
                 }
             }
