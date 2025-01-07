@@ -1,0 +1,74 @@
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/sample-job
+[Pipeline] {
+[Pipeline] stage (Checkout)
+Entering stage Checkout
+Proceeding
+[Pipeline] checkout
+The recommended git tool is: NONE
+No credentials specified
+
+git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+git config remote.origin.url https://github.com/example/repo.git # timeout=10
+Fetching upstream changes from https://github.com/example/repo.git
+git --version # timeout=10
+using GIT_ASKPASS to set credentials
+git fetch --tags --progress -- https://github.com/example/repo.git +refs/heads/:refs/remotes/origin/ # timeout=10
+git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+git rev-parse refs/remotes/origin/origin/main^{commit} # timeout=10
+Checking out Revision abcdef1234567890abcdef1234567890abcdef12 (origin/main)
+git config core.sparsecheckout # timeout=10
+git checkout -f abcdef1234567890abcdef1234567890abcdef12 # timeout=10
+git branch -a -v --no-abbrev # timeout=10
+git branch -D some-branch # timeout=10
+git rev-list --no-walk abcdef1234567890abcdef1234567890abcdef12 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+
+[Pipeline] stage (Build)
+Entering stage Build
+Proceeding
+[Pipeline] sh
+
+mvn clean package
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.200 s
+[INFO] Finished at: 2025-01-06T12:34:56Z
+[INFO] ------------------------------------------------------------------------
+[Pipeline] }
+[Pipeline] // stage
+
+[Pipeline] stage (Test)
+Entering stage Test
+Proceeding
+[Pipeline] sh
+
+mvn test
+[INFO] Running test suite
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[Pipeline] }
+[Pipeline] // stage
+
+[Pipeline] stage (Deploy)
+Entering stage Deploy
+Proceeding
+[Pipeline] sh
+
+./deploy.sh
+Deployment started...
+Deployment complete.
+[Pipeline] }
+[Pipeline] // stage
+
+[Pipeline] echo
+Deployment was successful.
+[Pipeline] End of Pipeline
+Finished: SUCCESS

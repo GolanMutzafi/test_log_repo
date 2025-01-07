@@ -2,21 +2,10 @@ pipeline {
     agent any
     parameters {
         string(name: 'RequiredFreeSpace', defaultValue: '10', description: 'The percentage of free space required')
-        string(name: 'LogFilePath', defaultValue: 'jenkinslog.txt', description: 'Log file path')
+        string(name: 'LogFilePath', defaultValue: 'jenkinslog.txt', description: 'Log file path (relative to workspace)')
         string(name: 'ErrorString', defaultValue: 'mvn', description: 'Error string for search')
     }
     stages {
-        stage("Prepare Environment") {
-            steps {
-                script {
-                    // Copy the log file to the workspace if needed
-                    if (!fileExists(params.LogFilePath)) {
-                        echo "Attempting to copy log file from outside workspace..."
-                        sh "cp ../jenkinslog.txt ${params.LogFilePath}" // Adjust the path if necessary
-                    }
-                }
-            }
-        }
         stage("space_test") {
             steps {
                 script {
@@ -38,7 +27,7 @@ pipeline {
                             script: "grep -q '${params.ErrorString}' '${params.LogFilePath}'",
                             returnStatus: true
                         )
-                        if (result == 0 && fileExists(params.LogFilePath)) {
+                        if (result == 0) {
                             error "Error found: '${params.ErrorString}' in file '${params.LogFilePath}'"
                         } else {
                             echo "No errors found with: '${params.ErrorString}' in file '${params.LogFilePath}'"
