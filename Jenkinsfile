@@ -3,7 +3,7 @@ pipeline {
     parameters {
         string(name: 'RequiredFreeSpace', defaultValue: '10', description: 'The percentage of free space required')
         string(name: 'LogFilePath', defaultValue: 'jenkinslog.txt', description: 'Log file path (relative to workspace)')
-        string(name: 'ErrorString', defaultValue: 'mvn', description: 'Error string for search')
+        string(name: 'ErrorString', defaultValue: 'mvn', description: 'Error string to search for')
     }
     stages {
         stage("space_test") {
@@ -18,22 +18,16 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
-                    if (fileContent.contains(params.ErrorString)) {
-                        echo "The text '${params.ErrorString}' was found in ${params.LogFilePath}"
-                    }
-                    
+                    echo "Free space: ${FREESPACE}%"
                     if (FREESPACE.toFloat() < params.RequiredFreeSpace.toFloat()) {
-                        def result = sh(
-                            script: "grep -q '${params.ErrorString}' '${params.LogFilePath}'",
-                            returnStatus: true
-                        )
-                        if (result == 0) {
+                        echo "Not enough free space. Checking for errors in the log file."
+                        if (fileContent.contains(params.ErrorString)) {
                             error "Error found: '${params.ErrorString}' in file '${params.LogFilePath}'"
                         } else {
-                            echo "No errors found with: '${params.ErrorString}' in file '${params.LogFilePath}'"
+                            echo "No errors found with '${params.ErrorString}' in file '${params.LogFilePath}'"
                         }
                     } else {
-                        echo "There is sufficient storage space on the disk"
+                        echo "Sufficient storage space available."
                     }
                 }
             }
